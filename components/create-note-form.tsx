@@ -57,6 +57,7 @@ export function CreateNoteForm({ onNoteCreated, onCancel }: CreateNoteFormProps)
         })
       }
     } catch (error) {
+      console.error("Error creating note:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

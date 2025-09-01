@@ -13,13 +13,14 @@ type SessionPayload = {
 }
 
 export async function createSession(payload: SessionPayload) {
-  const token = await new SignJWT(payload as any)
+  const token = await new SignJWT(payload as Record<string, unknown>)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${MAX_DAYS}d`)
     .sign(JWT_SECRET)
 
-  cookies().set(COOKIE_NAME, token, {
+  const cookieStore = await cookies()
+  cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
@@ -29,7 +30,8 @@ export async function createSession(payload: SessionPayload) {
 }
 
 export async function getSession(): Promise<SessionPayload | null> {
-  const token = cookies().get(COOKIE_NAME)?.value
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return null
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
@@ -39,6 +41,7 @@ export async function getSession(): Promise<SessionPayload | null> {
   }
 }
 
-export function clearSession() {
-  cookies().set(COOKIE_NAME, "", { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 0 })
+export async function clearSession() {
+  const cookieStore = await cookies()
+  cookieStore.set(COOKIE_NAME, "", { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 0 })
 }

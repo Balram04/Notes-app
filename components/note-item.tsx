@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { EditNoteForm } from "./edit-note-form"
 
@@ -52,6 +51,7 @@ export function NoteItem({ note, onNoteUpdated, onNoteDeleted }: NoteItemProps) 
         })
       }
     } catch (error) {
+      console.error("Error deleting note:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Brand } from "@/components/brand"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
@@ -30,11 +30,7 @@ export default function DashboardPage() {
   const { toast } = useToast()
   const router = useRouter()
 
-  useEffect(() => {
-    fetchUserAndNotes()
-  }, [])
-
-  const fetchUserAndNotes = async () => {
+  const fetchUserAndNotes = useCallback(async () => {
     try {
       // Check if user is authenticated by trying to fetch notes
       const notesResponse = await fetch("/api/notes")
@@ -61,7 +57,11 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    fetchUserAndNotes()
+  }, [fetchUserAndNotes])
 
   const handleNoteCreated = () => {
     setShowCreateForm(false)
@@ -102,6 +102,7 @@ export default function DashboardPage() {
         })
       }
     } catch (error) {
+      console.error("Error signing out:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

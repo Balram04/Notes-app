@@ -66,8 +66,9 @@ export function SignUpForm() {
           }
           toast({ title: "Account created", description: "Check your email to sign in with an OTP." })
           router.push("/sign-in")
-        } catch (err: any) {
-          toast({ title: "Sign up failed", description: err.message, variant: "destructive" })
+        } catch (err) {
+          const error = err as Error
+          toast({ title: "Sign up failed", description: error.message, variant: "destructive" })
         } finally {
           setLoading(false)
         }

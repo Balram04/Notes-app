@@ -64,6 +64,7 @@ export function EditNoteForm({ note, onNoteUpdated, onCancel }: EditNoteFormProp
         })
       }
     } catch (error) {
+      console.error("Error updating note:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

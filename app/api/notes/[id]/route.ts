@@ -8,7 +8,7 @@ interface Params {
 }
 
 // PUT - Update a note
-export async function PUT(request: NextRequest, { params }: { params: Params }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<Params> }) {
   try {
     const session = await getSession()
     if (!session) {
@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     }
 
     const { title, content } = await request.json()
-    const { id } = params
+    const { id } = await params
 
     if (!title || !content) {
       return NextResponse.json({ 
@@ -55,14 +55,14 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
 }
 
 // DELETE - Delete a note
-export async function DELETE(request: NextRequest, { params }: { params: Params }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<Params> }) {
   try {
     const session = await getSession()
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid note ID" }, { status: 400 })

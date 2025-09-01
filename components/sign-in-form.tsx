@@ -60,8 +60,9 @@ export function SignInForm() {
         description: "Check your inbox for the verification code.",
         variant: "default"
       })
-    } catch (err: any) {
-      toast({ title: "Failed to send code", description: err.message, variant: "destructive" })
+    } catch (err) {
+      const error = err as Error
+      toast({ title: "Failed to send code", description: error.message, variant: "destructive" })
       setOtpSent(false)
     } finally {
       setSendingOtp(false)
@@ -142,8 +143,9 @@ export function SignInForm() {
           }
           
           router.push("/dashboard")
-        } catch (err: any) {
-          toast({ title: "Sign in failed", description: err.message, variant: "destructive" })
+        } catch (err) {
+          const error = err as Error
+          toast({ title: "Sign in failed", description: error.message, variant: "destructive" })
         } finally {
           setLoading(false)
         }
@@ -212,11 +214,11 @@ export function SignInForm() {
           />
           <p className="text-xs text-[#6c6c6c]">Code expires in 10 minutes</p>
           <p className="text-xs text-[#6c6c6c]">
-            Don't see the code? Check your spam folder or{" "}
+            Don&apos;t see the code? Check your spam folder or{" "}
             <Link href="/sign-up" className="text-[#367aff] hover:underline">
               sign up
             </Link>{" "}
-            if you don't have an account.
+            if you don&apos;t have an account.
           </p>
         </div>
       )}

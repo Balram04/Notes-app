@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { getSession } from "@/lib/session"
-import { ObjectId } from "mongodb"
 
 // GET - Fetch all notes for the authenticated user
 export async function GET() {
