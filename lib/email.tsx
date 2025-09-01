@@ -11,7 +11,7 @@ if (!host || !user || !pass || !from) {
   throw new Error("Missing SMTP configuration (SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM)")
 }
 
-export const transporter = nodemailer.createTransporter({
+export const transporter = nodemailer.createTransport({
   host,
   port,
   secure: port === 465, // true for 465, false for other ports
