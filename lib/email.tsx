@@ -7,10 +7,11 @@ const pass = process.env.SMTP_PASS
 const from = process.env.SMTP_FROM
 
 if (!host || !user || !pass || !from) {
+  console.error("Missing SMTP configuration:", { host: !!host, user: !!user, pass: !!pass, from: !!from })
   throw new Error("Missing SMTP configuration (SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM)")
 }
 
-export const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransporter({
   host,
   port,
   secure: port === 465, // true for 465, false for other ports
@@ -25,6 +26,8 @@ export const transporter = nodemailer.createTransport({
 
 export async function sendOtpEmail(to: string, code: string) {
   try {
+    console.log("Attempting to send email to:", to)
+    
     const appUrl = process.env.APP_BASE_URL || ""
     const html = `
       <div style="font-family:system-ui, -apple-system, Segoe UI, Roboto; line-height:1.6;">
@@ -43,9 +46,10 @@ export async function sendOtpEmail(to: string, code: string) {
       html,
     })
     
+    console.log("Email sent successfully:", result.messageId)
     return result
   } catch (error) {
     console.error("Email sending failed:", error)
-    throw error
+    throw new Error(`SMTP Error: ${error instanceof Error ? error.message : 'Unknown email error'}`)
   }
 }
