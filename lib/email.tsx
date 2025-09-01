@@ -13,25 +13,39 @@ if (!host || !user || !pass || !from) {
 export const transporter = nodemailer.createTransport({
   host,
   port,
-  secure: port === 465,
-  auth: { user, pass },
+  secure: port === 465, // true for 465, false for other ports
+  auth: { 
+    user, 
+    pass 
+  },
+  tls: {
+    rejectUnauthorized: false // This helps with self-signed certificates
+  }
 })
 
 export async function sendOtpEmail(to: string, code: string) {
-  const appUrl = process.env.APP_BASE_URL || ""
-  const html = `
-    <div style="font-family:system-ui, -apple-system, Segoe UI, Roboto; line-height:1.6;">
-      <h2 style="margin:0 0 8px;">Your verification code</h2>
-      <p>Use this code to continue signing in:</p>
-      <p style="font-size:28px; font-weight:700; letter-spacing:6px; margin:12px 0;">${code}</p>
-      <p>This code expires in 10 minutes.</p>
-      ${appUrl ? `<p><a href="${appUrl}" target="_blank" rel="noreferrer">Open the app</a></p>` : ""}
-    </div>
-  `
-  await transporter.sendMail({
-    to,
-    from,
-    subject: "Your verification code",
-    html,
-  })
+  try {
+    const appUrl = process.env.APP_BASE_URL || ""
+    const html = `
+      <div style="font-family:system-ui, -apple-system, Segoe UI, Roboto; line-height:1.6;">
+        <h2 style="margin:0 0 8px;">Your verification code</h2>
+        <p>Use this code to continue signing in:</p>
+        <p style="font-size:28px; font-weight:700; letter-spacing:6px; margin:12px 0;">${code}</p>
+        <p>This code expires in 10 minutes.</p>
+        ${appUrl ? `<p><a href="${appUrl}" target="_blank" rel="noreferrer">Open the app</a></p>` : ""}
+      </div>
+    `
+    
+    const result = await transporter.sendMail({
+      to,
+      from,
+      subject: "Your verification code",
+      html,
+    })
+    
+    return result
+  } catch (error) {
+    console.error("Email sending failed:", error)
+    throw error
+  }
 }

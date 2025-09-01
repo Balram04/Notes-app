@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true })
   } catch (e) {
-    console.error("[v0] request-otp error", e)
+    console.error("Request OTP error:", e)
     return NextResponse.json({ error: "Server error" }, { status: 500 })
   }
 }
